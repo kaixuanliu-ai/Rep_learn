@@ -1,0 +1,1 @@
+venv/\nresults/*.pth\nwandb/\n__pycache__/\n*.pyc
