@@ -1,0 +1,18 @@
+训练启动信息
+启动时间: Wed Aug 27 22:25:38 EDT 2025
+WandB实体: kaixuan-liu31
+
+进程信息:
+CMDP训练PID: 24347
+原版训练PID: 24450
+
+日志文件:
+CMDP日志: cmdp_training.log
+原版日志: original_training.log
+
+WandB项目:
+CMDP: https://wandb.ai/kaixuan-liu31/briee_cmdp_h100
+原版: https://wandb.ai/kaixuan-liu31/briee_original_h100
+
+停止训练:
+kill 24347 24450

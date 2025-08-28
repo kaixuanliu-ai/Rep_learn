@@ -13,20 +13,20 @@ def parse_args():
 
     parser.add_argument('--exp_name', default="test", type=str)
     parser.add_argument('--num_threads', default=10, type=int)
-    parser.add_argument('--update_frequency', default=1, type=int)  # 原来=1, 减少更新频率
+    parser.add_argument('--update_frequency', default=3, type=int)  # 原来=1, 减少更新频率
 
     parser.add_argument('--temp_path', default="temp", type=str)
 
-    parser.add_argument('--num_envs', default=50, type=int)  # 原来=50, 减少并行环境数
-    parser.add_argument('--recent_size', default=10000, type=int)  # 原来=10000, 减少buffer大小
-    parser.add_argument('--lsvi_recent_size', default=10000, type=int)  # 原来=10000, 减少buffer大小
+    parser.add_argument('--num_envs', default=30, type=int)  # 原来=50, 减少并行环境数
+    parser.add_argument('--recent_size', default=5000, type=int)  # 原来=10000, 减少buffer大小
+    parser.add_argument('--lsvi_recent_size', default=5000, type=int)  # 原来=10000, 减少buffer大小
     parser.add_argument('--load', default=False, type=bool)
     parser.add_argument('--dense', default=False, type=bool)
 
     parser.add_argument('--seed', default=12, type=int)
     parser.add_argument('--num_warm_start', default=0, type=int)
-    parser.add_argument('--num_episodes', default=1e7, type=int)  # 原来=1e7, 减少总episode数
-    parser.add_argument('--batch_size', default=512, type=int)  # 原来=512, 减少batch大小
+    parser.add_argument('--num_episodes', default=5e6, type=int)  # 原来=1e7, 减少总episode数
+    parser.add_argument('--batch_size', default=256, type=int)  # 原来=512, 减少batch大小
 
 
     #environment
@@ -40,9 +40,9 @@ def parse_args():
     parser.add_argument('--env_temperature', default=0.2, type=float)
 
     #rep
-    parser.add_argument('--rep_num_update', default=30, type=int)  # 原来=30, 减少rep更新次数
-    parser.add_argument('--rep_num_feature_update', default=64, type=int)  # 原来=64, 减少feature更新次数
-    parser.add_argument('--rep_num_adv_update', default=64, type=int)  # 原来=64, 减少adversarial更新次数
+    parser.add_argument('--rep_num_update', default=20, type=int)  # 原来=30, 减少rep更新次数
+    parser.add_argument('--rep_num_feature_update', default=32, type=int)  # 原来=64, 减少feature更新次数
+    parser.add_argument('--rep_num_adv_update', default=32, type=int)  # 原来=64, 减少adversarial更新次数
     parser.add_argument('--discriminator_lr', default=2e-2, type=float)  # 原来=1e-2, 提高学习率加速收敛
     parser.add_argument('--discriminator_beta', default=0.9, type=float)
     parser.add_argument('--feature_lr', default=2e-2, type=float)  # 原来=1e-2, 提高学习率加速收敛
@@ -50,7 +50,7 @@ def parse_args():
     parser.add_argument('--linear_lr', default=2e-2, type=float)  # 原来=1e-2, 提高学习率加速收敛
     parser.add_argument('--linear_beta', default=0.9, type=float)
     parser.add_argument('--rep_lamb', default=0.01, type=float)
-    parser.add_argument('--hidden_dim', default=256, type=int)  # 原来=256, 减少隐藏层维度
+    parser.add_argument('--hidden_dim', default=128, type=int)  # 原来=256, 减少隐藏层维度
     parser.add_argument('--temperature', default=1, type=float)
     parser.add_argument('--phi0_temperature', default=0.1, type=float)
 
@@ -65,12 +65,6 @@ def parse_args():
 
     #eval
     parser.add_argument('--num_eval', default=10, type=int)  # 原来=20, 减少评估环境数
-
-    # CMDP parameters
-    parser.add_argument('--cmdp_b', default=0.1, type=float, help='Minimum exploration probability constraint')
-    parser.add_argument('--cmdp_eta', default=1e-3, type=float, help='Learning rate for Lagrange multiplier update')
-    parser.add_argument('--cmdp_xi', default=None, type=float, help='Upper bound for Lagrange multiplier (default: 2*horizon/sqrt(episode))')
-    parser.add_argument('--enable_cmdp', default=False, type=bool, help='Enable CMDP constraints')
 
     args = parser.parse_args()
     return args
