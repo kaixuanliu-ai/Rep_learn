@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a research implementation of BRIEE (Block-MDP Efficient Representation Learning), an ICML 2022 paper on model-free representation learning in reinforcement learning. The codebase focuses on representation learning and representational transfer in block MDPs.
 
+**CMDP Extension**: This implementation includes a Constrained Markov Decision Process (CMDP) extension that ensures minimum exploration probability constraints **during evaluation only**. The training phase maintains the original BRIEE data collection strategy (random exploration) to preserve convergence properties, while the CMDP constraint is applied only during policy evaluation to ensure at least 0.1 probability for each action.
+
 ## Development Commands
 
 ### Environment Setup
@@ -30,8 +32,17 @@ bash run_simplex.sh [num_threads] [save_path]
 # Dense reward variant  
 bash run_dense.sh [num_threads] [save_path]
 
+# CMDP-constrained BRIEE (NEW)
+bash run_cmdp.sh [horizon] [num_threads] [save_path]
+
+# Original BRIEE for comparison
+bash run_original_briee.sh [horizon] [num_threads] [save_path]
+
 # Direct execution
 python main.py --horizon 100 --num_threads 10 --temp_path results
+
+# Direct CMDP execution
+python main.py --horizon 100 --num_threads 10 --temp_path results --enable_cmdp True --cmdp_b 0.1
 ```
 
 ## Architecture
@@ -57,6 +68,9 @@ All hyperparameters are centralized in `utils.py` with categories:
 - Representation learning (hidden_dim, learning rates, update frequencies)  
 - LSVI-UCB parameters (alpha, lambda regularization)
 - Training logistics (batch_size, num_episodes, num_threads)
+- **CMDP parameters (NEW)**:
+  - `enable_cmdp`: Enable/disable CMDP constraints during evaluation (default: False)
+  - `cmdp_b`: Minimum exploration probability constraint during evaluation (default: 0.1)
 
 ### Experiment Tracking
 Uses Weights & Biases (wandb) for logging. Set `WANDB_MODE='offline'` in main.py to disable online logging.

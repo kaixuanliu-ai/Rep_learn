@@ -58,7 +58,8 @@ def evaluate(env, agent, args):
     
     obs = env.reset()
     for h in range(args.horizon):
-        action = agent.act_batch(obs, h)
+        # 评估时使用CMDP约束（如果启用）
+        action = agent.act_batch(obs, h, use_cmdp_constraint=True)
         next_obs, reward, done, _ = env.step(action)
         obs = next_obs
         returns += reward
@@ -118,7 +119,11 @@ def main(args):
                      device,
                      rep_learners,
                      recent_size = args.lsvi_recent_size,
-                     lamb = args.lsvi_lamb)
+                     lamb = args.lsvi_lamb,
+                     enable_cmdp = args.enable_cmdp,
+                     cmdp_b = args.cmdp_b,
+                     cmdp_eta = args.cmdp_eta,
+                     cmdp_xi = args.cmdp_xi)
 
     if args.horizon >= 50:
         args.num_warm_start = 200
@@ -148,7 +153,7 @@ def main(args):
             t = 0
             obs = env.reset()
             while t < h:
-                action = agent.act_batch(obs, t)
+                action = agent.act_batch(obs, t, use_cmdp_constraint=False)  # 训练时不使用CMDP约束
                 next_obs, _, _, _ = env.step(action)
                 obs = next_obs
                 t += 1
@@ -226,16 +231,27 @@ def main(args):
                     reached = h
                     break
 
-            wandb.log({"rep_learn_time": rep_learn_time,
-                        "lsvi_time": lsvi_time,
-                        "eval": np.mean(list(returns)) if args.variable_latent else eval_return,
-                        "episode:": n * args.num_envs,
-                        "reached": reached,
-                        "state 0": counts[-1,0],
-                        "state 1": counts[-1,1],
-                        "episode:": n * args.num_envs * args.horizon,
-                        "sampling time": inference_time,
-                        "eval time": eval_time})
+            log_data = {
+                "rep_learn_time": rep_learn_time,
+                "lsvi_time": lsvi_time,
+                "eval": np.mean(list(returns)) if args.variable_latent else eval_return,
+                "episode:": n * args.num_envs,
+                "reached": reached,
+                "state 0": counts[-1,0],
+                "state 1": counts[-1,1],
+                "episode:": n * args.num_envs * args.horizon,
+                "sampling time": inference_time,
+                "eval time": eval_time
+            }
+            
+            # 添加CMDP相关指标
+            if args.enable_cmdp:
+                log_data.update({
+                    "cmdp_enabled": True,
+                    "cmdp_b": args.cmdp_b
+                })
+            
+            wandb.log(log_data)
 
 
             agent.save_weight(args.temp_path)

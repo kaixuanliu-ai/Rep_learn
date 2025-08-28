@@ -66,6 +66,12 @@ def parse_args():
     #eval
     parser.add_argument('--num_eval', default=10, type=int)  # 原来=20, 减少评估环境数
 
+    # CMDP parameters
+    parser.add_argument('--cmdp_b', default=0.1, type=float, help='Minimum exploration probability constraint')
+    parser.add_argument('--cmdp_eta', default=1e-3, type=float, help='Learning rate for Lagrange multiplier update')
+    parser.add_argument('--cmdp_xi', default=None, type=float, help='Upper bound for Lagrange multiplier (default: 2*horizon/sqrt(episode))')
+    parser.add_argument('--enable_cmdp', default=False, type=bool, help='Enable CMDP constraints')
+
     args = parser.parse_args()
     return args
 
